@@ -6,14 +6,15 @@ __date__ = '2018/1/22 0022 19:42'
 
 import requests
 from scrapy.selector import Selector
-import MySQLdb
+import pymysql
 
-conn = MySQLdb.connect(
+conn = pymysql.connect(
     host="127.0.0.1",
-    user="root",
-    passwd="tp158917",
+    user="palanbi",
+    passwd="DataRx2017!",
     db="articlespider",
-    charset="utf8")
+    charset="utf8",
+    cursorclass=pymysql.cursors.DictCursor)
 cursor = conn.cursor()
 
 
@@ -68,7 +69,7 @@ class GetIP(object):
     def judge_ip(self, ip, port):
         # 判断ip是否可用
         http_url = "https://www.baidu.com"
-        proxy_url = "http://{0}:{1}".format( ip,port)
+        proxy_url = "http://{0}:{1}".format(ip, port)
         try:
             proxy_dict = {
                 "http": proxy_url,
@@ -76,16 +77,16 @@ class GetIP(object):
             response = requests.get(http_url, proxies=proxy_dict)
         except Exception as e:
             print(ip)
-            print ("invalid ip and port")
+            print("invalid ip and port")
             self.delete_ip(ip)
             return False
         else:
             code = response.status_code
             if code >= 200 and code < 300:
-                print ("valid ip")
+                print("valid ip")
                 return True
             else:
-                print ("invalid ip and port")
+                print("invalid ip and port")
                 self.delete_ip(ip)
                 return False
 
@@ -101,7 +102,6 @@ class GetIP(object):
             ip = ip_info[0]
             port = ip_info[1]
 
-
             judge_re = self.judge_ip(ip, port)
             if judge_re:
                 return "http://{0}:{1}".format(ip, port)
@@ -111,5 +111,6 @@ class GetIP(object):
 
 # print (crawl_ips())
 if __name__ == "__main__":
+    # crawl_ips()
     get_ip = GetIP()
     get_ip.get_random_ip()

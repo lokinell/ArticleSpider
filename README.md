@@ -42,3 +42,7 @@
 支付宝打赏:
 
 ![mark](http://myphoto.mtianyan.cn/blog/180302/gDlBGemI60.jpg?imageslim)
+
+
+## mysql
+https://pymysql.readthedocs.io/en/latest/index.html

@@ -1,0 +1,16 @@
+version: '2'
+services:
+    palanbi-mysql:
+        image: mysql:5.7.20
+        environment:
+            - MYSQL_ROOT_PASSWORD=root
+            - MYSQL_USER=palanbi
+            - MYSQL_PASSWORD=DataRx2017!
+            - MYSQL_DATABASE=articlespider
+        volumes:
+          - ./initdb:/docker-entrypoint-initdb.d
+          - ./mysql/:/var/lib/mysql/
+
+        ports:
+            - 3306:3306
+        command: mysqld --lower_case_table_names=1 --skip-ssl --character_set_server=utf8 --explicit_defaults_for_timestamp
