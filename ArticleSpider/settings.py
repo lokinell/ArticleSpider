@@ -133,8 +133,8 @@ AUTOTHROTTLE_ENABLED = True
 # mysql基本信息
 MYSQL_HOST = "127.0.0.1"
 MYSQL_DBNAME = "articlespider"
-MYSQL_USER = "root"
-MYSQL_PASSWORD = "tp158917"
+MYSQL_USER = "palanbi"
+MYSQL_PASSWORD = "DataRx2017!"
 
 # LOG_ENABLED = True
 SQL_DATETIME_FORMAT = "%Y-%m-%d %H:%M:%S"

@@ -6,8 +6,8 @@
 # See: https://doc.scrapy.org/en/latest/topics/item-pipeline.html
 import codecs
 import json
-import MySQLdb
-import MySQLdb.cursors
+import pymysql
+import pymysql.cursors
 from twisted.enterprise import adbapi
 from datetime import datetime
 from scrapy.exporters import JsonItemExporter
@@ -38,7 +38,7 @@ class MysqlTwistedPipeline(object):
             user=settings["MYSQL_USER"],
             passwd=settings["MYSQL_PASSWORD"],
             charset='utf8',
-            cursorclass=MySQLdb.cursors.DictCursor,
+            cursorclass=pymysql.cursors.DictCursor,
             use_unicode=True,
         )
         # 连接池ConnectionPool
@@ -68,11 +68,10 @@ class MysqlTwistedPipeline(object):
 class MysqlPipeline(object):
     # 采用同步的机制写入mysql
     def __init__(self):
-        self.conn = MySQLdb.connect(
-            '127.0.0.1',
-            'root',
-            'tp158917',
-            'articlespider',
+        self.conn = pymysql.connect(
+            user="palanbi",
+            passwd="DataRx2017!",
+            db="articlespider",
             charset="utf8",
             use_unicode=True)
         self.cursor = self.conn.cursor()
