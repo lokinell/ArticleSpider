@@ -8,16 +8,18 @@ import datetime
 import pickle
 import re
 
-from ArticleSpider.settings import SQL_DATETIME_FORMAT
-from ArticleSpider.utils.common import extract_num
 import scrapy
+from elasticsearch_dsl.connections import connections
 from scrapy.loader import ItemLoader
 from scrapy.loader.processors import TakeFirst, MapCompose, Join
 from w3lib.html import remove_tags
+
 from ArticleSpider.models.es_jobbole import ArticleType
+from ArticleSpider.settings import SQL_DATETIME_FORMAT
+from ArticleSpider.utils.common import extract_num
 from models.es_lagou import LagouType
 from models.es_zhihu import ZhiHuQuestionType, ZhiHuAnswerType
-from elasticsearch_dsl.connections import connections
+
 # 与es进行连接生成搜索建议
 es_article = connections.create_connection(ArticleType._doc_type.using)
 es_zhihu_question = connections.create_connection(ZhiHuQuestionType._doc_type.using)
@@ -25,12 +27,12 @@ es_lagou = connections.create_connection(LagouType._doc_type.using)
 es_zhihu_anwser = connections.create_connection(ZhiHuAnswerType._doc_type.using)
 # redis实现抓取数据同步显示
 import redis
+
 redis_cli = redis.StrictRedis()
 ## 设置数据初始值
 JOB_COUNT_INIT = 161042
 ZHIHU_COUNT_INIT = 173057
 JOBBOLE_COUNT_INIT = 5003
-
 
 
 class ArticlespiderItem(scrapy.Item):
@@ -39,7 +41,7 @@ class ArticlespiderItem(scrapy.Item):
     pass
 
 
-def gen_suggests(es_con,index, info_tuple):
+def gen_suggests(es_con, index, info_tuple):
     es = es_con
     # 根据字符串生成搜索建议数组
     used_words = set()
@@ -48,14 +50,14 @@ def gen_suggests(es_con,index, info_tuple):
     for text, weight in info_tuple:
         if text:
             # 调用es的analyze接口分析字符串：分词并做大小写的转换
-            words = es.indices.analyze(index=index, analyzer="ik_max_word", params={'filter':["lowercase"]}, body=text)
-            anylyzed_words = set([r["token"] for r in words["tokens"] if len(r["token"])>1])
+            words = es.indices.analyze(index=index, analyzer="ik_max_word", params={'filter': ["lowercase"]}, body=text)
+            anylyzed_words = set([r["token"] for r in words["tokens"] if len(r["token"]) > 1])
             new_words = anylyzed_words - used_words
         else:
             new_words = set()
 
         if new_words:
-            suggests.append({"input":list(new_words), "weight":weight})
+            suggests.append({"input": list(new_words), "weight": weight})
 
     return suggests
 
@@ -94,6 +96,7 @@ def remove_comment_tags(value):
 def return_value(value):
     return value
 
+
 # 排除none值
 
 
@@ -103,6 +106,7 @@ def exclude_none(value):
     else:
         value = "无"
         return value
+
 
 # 自定义itemloader实现默认取第一个值
 
@@ -174,6 +178,7 @@ class FangItem(scrapy.Item):
             self["tags"],
             self["crawl_time"])
         return insert_sql, params
+
 
 # 伯乐在线items类
 class JobBoleArticleItem(scrapy.Item):
@@ -263,7 +268,8 @@ class JobBoleArticleItem(scrapy.Item):
         article.meta.id = self["url_object_id"]
 
         # 在保存数据时便传入suggest
-        article.suggest = gen_suggests(es_article,ArticleType._doc_type.index, ((article.title, 10), (article.tags, 7),(article.content, 3)))
+        article.suggest = gen_suggests(es_article, ArticleType._doc_type.index,
+                                       ((article.title, 10), (article.tags, 7), (article.content, 3)))
         if redis_cli.get("jobbole_count"):
             jobbole_count = pickle.loads(redis_cli.get("jobbole_count"))
             jobbole_count = jobbole_count + 1
@@ -271,7 +277,7 @@ class JobBoleArticleItem(scrapy.Item):
             redis_cli.set("jobbole_count", jobbole_count)
         else:
             jobbole_count = pickle.dumps(JOBBOLE_COUNT_INIT)
-            redis_cli.set("jobbole_count",jobbole_count)
+            redis_cli.set("jobbole_count", jobbole_count)
         article.save()
 
 
@@ -341,6 +347,7 @@ class ZhihuQuestionItem(scrapy.Item):
             self["crawl_time"])
 
         return insert_sql, params
+
     def save_to_es(self):
         self.make_data_clean()
         zhihu = ZhiHuQuestionType()
@@ -355,17 +362,19 @@ class ZhihuQuestionItem(scrapy.Item):
         zhihu.click_num = self["click_num"]
         zhihu.crawl_time = self["crawl_time"]
 
-         # 在保存数据时便传入suggest
-        zhihu.suggest = gen_suggests(es_zhihu_question,ZhiHuQuestionType._doc_type.index, ((zhihu.title, 10), (zhihu.topics, 7),(zhihu.content, 3)))
+        # 在保存数据时便传入suggest
+        zhihu.suggest = gen_suggests(es_zhihu_question, ZhiHuQuestionType._doc_type.index,
+                                     ((zhihu.title, 10), (zhihu.topics, 7), (zhihu.content, 3)))
         if redis_cli.get("zhihu_count"):
             zhihu_count = pickle.loads(redis_cli.get("zhihu_count"))
             zhihu_count = zhihu_count + 1
             zhihu_count = pickle.dumps(zhihu_count)
-            redis_cli.set("zhihu_count",zhihu_count)
+            redis_cli.set("zhihu_count", zhihu_count)
         else:
             zhihu_count = pickle.dumps(ZHIHU_COUNT_INIT)
-            redis_cli.set("zhihu_count",zhihu_count)
+            redis_cli.set("zhihu_count", zhihu_count)
         zhihu.save()
+
 
 class ZhihuAnswerItem(scrapy.Item):
     # 知乎的问题回答item
@@ -408,6 +417,7 @@ class ZhihuAnswerItem(scrapy.Item):
         )
 
         return insert_sql, params
+
     def save_to_es(self):
         self.make_data_clean()
         zhihu = ZhiHuAnswerType()
@@ -424,17 +434,18 @@ class ZhihuAnswerItem(scrapy.Item):
         zhihu.author_name = self["author_name"]
 
         # 在保存数据时便传入suggest
-        zhihu.suggest = gen_suggests(es_zhihu_anwser,ZhiHuAnswerType._doc_type.index,
+        zhihu.suggest = gen_suggests(es_zhihu_anwser, ZhiHuAnswerType._doc_type.index,
                                      ((zhihu.author_name, 10), (zhihu.content, 7)))
         if redis_cli.get("zhihu_count"):
             zhihu_count = pickle.loads(redis_cli.get("zhihu_count"))
             zhihu_count = zhihu_count + 1
             zhihu_count = pickle.dumps(zhihu_count)
-            redis_cli.set("zhihu_count",zhihu_count)
+            redis_cli.set("zhihu_count", zhihu_count)
         else:
             zhihu_count = pickle.dumps(ZHIHU_COUNT_INIT)
-            redis_cli.set("zhihu_count",zhihu_count)
+            redis_cli.set("zhihu_count", zhihu_count)
         zhihu.save()
+
 
 def remove_splash(value):
     # 去掉工作城市的斜线
@@ -506,7 +517,7 @@ class LagouJobItem(scrapy.Item):
             self['work_years_max'] = match_obj4.group(1)
         elif match_obj5:
             self['work_years_min'] = match_obj4.group(1)
-            self['work_years_max'] = match_obj4.group(1)+100
+            self['work_years_max'] = match_obj4.group(1) + 100
         else:
             self['work_years_min'] = 999
             self['work_years_max'] = 999
@@ -574,7 +585,7 @@ class LagouJobItem(scrapy.Item):
 
         return insert_sql, params
 
-     # 保存拉勾网职位到es中
+    # 保存拉勾网职位到es中
     def save_to_es(self):
         self.make_data_clean()
         job = LagouType()
@@ -599,14 +610,34 @@ class LagouJobItem(scrapy.Item):
 
         # 在保存数据时便传入suggest
         job.suggest = gen_suggests(es_lagou, LagouType._doc_type.index,
-                                     ((job.title, 10), (job.tags, 7), (job.job_advantage, 6),(job.job_desc,5),(job.job_addr, 4),(job.company_name,8),(job.degree_need,3),(job.job_city,9)))
+                                   ((job.title, 10), (job.tags, 7), (job.job_advantage, 6), (job.job_desc, 5),
+                                    (job.job_addr, 4), (job.company_name, 8), (job.degree_need, 3), (job.job_city, 9)))
         if redis_cli.get("job_count"):
             job_count = pickle.loads(redis_cli.get("job_count"))
             job_count = job_count + 1
             job_count = pickle.dumps(job_count)
-            redis_cli.set("job_count",job_count)
+            redis_cli.set("job_count", job_count)
         else:
             job_count = pickle.dumps(JOB_COUNT_INIT)
-            redis_cli.set("job_count",job_count)
+            redis_cli.set("job_count", job_count)
         job.save()
 
+
+class ArticleItem(scrapy.Item):
+    """定义要抓取的内容"""
+    pass
+
+
+class WanfangItem(scrapy.Item):
+    # define the fields for your item here like:
+    # name = scrapy.Field()
+    C_title = scrapy.Field()#中文标题
+    E_title = scrapy.Field()#英文标题
+    link = scrapy.Field()#链接
+    C_author = scrapy.Field()#作者姓名 中文
+    E_author = scrapy.Field()#作者姓名 英文
+    periodical = scrapy.Field()#期刊名称
+    abstract = scrapy.Field()#摘要 中文
+    keywords = scrapy.Field()#关键字 中文
+    time = scrapy.Field()#出版日期
+    fund = scrapy.Field()#基金项目

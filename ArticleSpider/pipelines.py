@@ -6,16 +6,13 @@
 # See: https://doc.scrapy.org/en/latest/topics/item-pipeline.html
 import codecs
 import json
+
 import pymysql
 import pymysql.cursors
-from twisted.enterprise import adbapi
-from datetime import datetime
 from scrapy.exporters import JsonItemExporter
 from scrapy.pipelines.images import ImagesPipeline
-from ArticleSpider.models.es_jobbole import ArticleType
-from ArticleSpider.models.es_lagou import LagouType
-from ArticleSpider.models.es_zhihu import ZhiHuQuestionType,ZhiHuAnswerType
-from w3lib.html import remove_tags
+from twisted.enterprise import adbapi
+
 
 class ArticlespiderPipeline(object):
     def process_item(self, item, spider):
@@ -62,7 +59,7 @@ class MysqlTwistedPipeline(object):
 
     def handle_error(self, failure, item, spider):
         # 处理异步插入的异常
-        print (failure)
+        print(failure)
 
 
 class MysqlPipeline(object):
@@ -86,9 +83,10 @@ class MysqlPipeline(object):
             insert_sql,
             (item["title"],
              item["url"],
-                item["create_date"],
-                item["fav_nums"]))
+             item["create_date"],
+             item["fav_nums"]))
         self.conn.commit()
+
 
 # 自定义的将伯乐在线内容保存到本地json的pipeline
 
@@ -138,9 +136,29 @@ class ArticleImagePipeline(ImagesPipeline):
 
         return item
 
+
 class ElasticSearchPipeline(object):
     # 将伯乐在线数据写入到es中
     def process_item(self, item, spider):
         # 将item转换为es数据。
         item.save_to_es()
-        return  item
+        return item
+
+
+class WanfangPipeline(object):
+    def __init__(self):
+        self.count = 0
+        self.paper = 0
+        self.name = 'TCM.txt'
+
+    def process_item(self, item, spider):
+        a = json.dumps(dict(item), ensure_ascii=False)
+        if self.count % 100 == 0:
+            print("-------------------" * 10)
+            self.paper += 1
+        with open("./data1/d" + str(self.paper) + self.name, "a", encoding='utf8') as f:
+            f.write(a)
+            f.write("\n")
+            f.close()
+        self.count += 1
+        print(self.count, "**" * 20)
