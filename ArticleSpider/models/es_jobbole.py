@@ -1,4 +1,6 @@
 # _*_ coding: utf-8 _*_
+import settings
+
 __author__ = 'mtianyan'
 __date__ = '2017/6/24 22:57'
 
@@ -11,7 +13,7 @@ from elasticsearch_dsl.analysis import CustomAnalyzer as _CustomAnalyzer
 from elasticsearch_dsl.connections import connections
 
 # 与服务器进行连接，允许多个
-connections.create_connection(hosts=["localhost"])
+connections.create_connection(hosts=[settings.ES_HOST])
 
 
 # 解决建议的bug问题自定义分词器。

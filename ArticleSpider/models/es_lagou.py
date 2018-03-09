@@ -1,4 +1,6 @@
 # _*_ coding: utf-8 _*_
+import settings
+
 __author__ = 'mtianyan'
 __date__ = '2017/6/25 10:18'
 
@@ -10,7 +12,7 @@ from elasticsearch_dsl import DocType, Date, Nested, Boolean, \
 from elasticsearch_dsl.analysis import CustomAnalyzer as _CustomAnalyzer
 
 from elasticsearch_dsl.connections import connections
-connections.create_connection(hosts=["localhost"])
+connections.create_connection(hosts=[settings.ES_HOST])
 
 
 class CustomAnalyzer(_CustomAnalyzer):

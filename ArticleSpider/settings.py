@@ -136,6 +136,9 @@ MYSQL_DBNAME = "articlespider"
 MYSQL_USER = "palanbi"
 MYSQL_PASSWORD = "DataRx2017!"
 
+# elasticsearch配置信息
+ES_HOST = "127.0.0.1"
+
 # LOG_ENABLED = True
 SQL_DATETIME_FORMAT = "%Y-%m-%d %H:%M:%S"
 SQL_DATE_FORMAT = "%Y-%m-%d"
