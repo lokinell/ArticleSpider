@@ -1,9 +1,11 @@
 from datetime import datetime
+
 from elasticsearch_dsl import DocType, Date, Integer, Keyword, Text
 from elasticsearch_dsl.connections import connections
 
 # Define a default Elasticsearch client
 connections.create_connection(hosts=['localhost'])
+
 
 class Article(DocType):
     title = Text(analyzer='snowball', fields={'raw': Keyword()})
@@ -15,12 +17,13 @@ class Article(DocType):
     class Meta:
         index = 'blog'
 
-    def save(self, ** kwargs):
+    def save(self, **kwargs):
         self.lines = len(self.body.split())
-        return super(Article, self).save(** kwargs)
+        return super(Article, self).save(**kwargs)
 
     def is_published(self):
         return datetime.now() > self.published_from
+
 
 # create the mappings in elasticsearch
 Article.init()

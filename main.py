@@ -20,8 +20,10 @@ print(os.path.dirname(os.path.abspath(__file__)))
 # 可以传递一个数组参数进来:
 # execute(["scrapy", "crawl" , "jobbole"])
 
-execute(["scrapy", "crawl", "zhihu"])
+# execute(["scrapy", "crawl", "zhihu"])
 
 # execute(["scrapy", "crawl" , "lagou"])
 
 # execute(["scrapy", "crawl" , "fang"])
+
+execute(["scrapy", "crawl", "wanfang"])
