@@ -28,13 +28,13 @@ ROBOTSTXT_OBEY = False
 # Configure a delay for requests for the same website (default: 0)
 # See https://doc.scrapy.org/en/latest/topics/settings.html#download-delay
 # See also autothrottle settings and docs
-#DOWNLOAD_DELAY = 3
+DOWNLOAD_DELAY = 3
 # The download delay setting will honor only one of:
 #CONCURRENT_REQUESTS_PER_DOMAIN = 16
 #CONCURRENT_REQUESTS_PER_IP = 16
 
 # Disable cookies (enabled by default)
-#COOKIES_ENABLED = False
+COOKIES_ENABLED = False
 
 # Disable Telnet Console (enabled by default)
 #TELNETCONSOLE_ENABLED = False
@@ -59,12 +59,13 @@ DOWNLOADER_MIDDLEWARES = {
     # 默认自带用户代理中间件需要none不使用
     'scrapy.downloadermiddlewares.useragent.UserAgentMiddleware': None,
     # 自定义的使用随机用户代理的中间件
-    'ArticleSpider.middlewares.RandomUserAgentMiddlware': 400,
+    #'ArticleSpider.middlewares.RandomUserAgentMiddlware': 400,
+    'ArticleSpider.middlewares.ProxyMiddleware': 100,
     # 为伯乐在线测试的Chrome集成。
     # 'ArticleSpider.middlewares.JSPageMiddleware': 1,
 
     # 随机更换西刺ip代理池中ip的中间件
-    # 'ArticleSpider.middlewares.RandomProxyMiddleware': 2,
+    #'ArticleSpider.middlewares.RandomProxyMiddleware': 2,
 }
 
 # Enable or disable extensions
@@ -76,7 +77,9 @@ DOWNLOADER_MIDDLEWARES = {
 # Configure item pipelines
 # See https://doc.scrapy.org/en/latest/topics/item-pipeline.html
 ITEM_PIPELINES = {
-   'ArticleSpider.pipelines.ArticlespiderPipeline': 300,
+   #'ArticleSpider.pipelines.ArticlespiderPipeline': 300,
+    'ArticleSpider.pipelines.GoogleScholarPipeline': 300,
+    #'ArticleSpider.pipelines.GoogleScholarPipeline': 300,
 
     # scrapy自带的三大法宝之一图片下载
     # 'scrapy.pipelines.images.ImagesPipeline': 1,
@@ -97,9 +100,9 @@ ITEM_PIPELINES = {
     # 'ArticleSpider.pipelines.MysqlTwistedPipeline': 6,
 
     # 将数据存入es中
-    'ArticleSpider.pipelines.ElasticSearchPipeline': 7,
+    #'ArticleSpider.pipelines.ElasticSearchPipeline': 7,
 
-    'ArticleSpider.pipelines.WanfangPipeline': 8,
+    #'ArticleSpider.pipelines.WanfangPipeline': 8,
 }
 
 # 设置哪个字段是图片
@@ -115,9 +118,9 @@ sys.path.insert(0, os.path.join(BASE_DIR, 'ArticleSpider'))
 # See https://doc.scrapy.org/en/latest/topics/autothrottle.html
 AUTOTHROTTLE_ENABLED = True
 # The initial download delay
-#AUTOTHROTTLE_START_DELAY = 5
+AUTOTHROTTLE_START_DELAY = 50
 # The maximum download delay to be set in case of high latencies
-#AUTOTHROTTLE_MAX_DELAY = 60
+AUTOTHROTTLE_MAX_DELAY = 60
 # The average number of requests Scrapy should be sending in parallel to
 # each remote server
 #AUTOTHROTTLE_TARGET_CONCURRENCY = 1.0
@@ -135,8 +138,8 @@ AUTOTHROTTLE_ENABLED = True
 # mysql基本信息
 MYSQL_HOST = "127.0.0.1"
 MYSQL_DBNAME = "articlespider"
-MYSQL_USER = "palanbi"
-MYSQL_PASSWORD = "DataRx2017!"
+MYSQL_USER = "palan"
+MYSQL_PASSWORD = "palan"
 
 # elasticsearch配置信息
 ES_HOST = "127.0.0.1"
@@ -165,4 +168,8 @@ USER_AGENTS = [
     "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/535.11 (KHTML, like Gecko) Chrome/17.0.963.56 Safari/535.11",
     "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_7_3) AppleWebKit/535.20 (KHTML, like Gecko) Chrome/19.0.1036.7 Safari/535.20",
     "Opera/9.80 (Macintosh; Intel Mac OS X 10.6.8; U; fr) Presto/2.9.168 Version/11.52",
+]
+
+PROXIES = [
+    {'ip_port': '127.0.0.1:8118', 'user_pass': ''},
 ]

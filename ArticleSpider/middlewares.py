@@ -9,9 +9,9 @@ from scrapy import signals
 from fake_useragent import UserAgent
 from selenium import webdriver
 from scrapy.http import HtmlResponse
-
+import random
 from tools.xici_ip import GetIP
-
+from settings import PROXIES
 
 class JSPageMiddleware(object):
 
@@ -155,3 +155,18 @@ class ArticlespiderDownloaderMiddleware(object):
 
     def spider_opened(self, spider):
         spider.logger.info('Spider opened: %s' % spider.name)
+
+
+
+class ProxyMiddleware(object):
+    def process_request(self, request, spider):
+        proxy = random.choice(PROXIES)
+        if proxy['user_pass'] is not None:
+            request.meta['proxy'] = "http://%s" % proxy['ip_port']
+            #encoded_user_pass = base64.encodestring(proxy['user_pass'])
+            encoded_user_pass = ''
+            request.headers['Proxy-Authorization'] = 'Basic ' + encoded_user_pass
+            print("**************ProxyMiddleware have pass************" + proxy['ip_port'])
+        else:
+            print ("**************ProxyMiddleware no pass************" + proxy['ip_port'])
+            request.meta['proxy'] = "http://%s" % proxy['ip_port']

@@ -641,3 +641,18 @@ class WanfangItem(scrapy.Item):
     keywords = scrapy.Field()#关键字 中文
     time = scrapy.Field()#出版日期
     fund = scrapy.Field()#基金项目
+
+class GoogleScholarItem(scrapy.Item):
+    # define the fields for your item here like:
+    #name = Field()
+
+    title = scrapy.Field()
+    #url = scrapy.Field()
+    #related-text = scrapy.Field()
+    #related-type = scrapy.Field()
+    #related-url = scrapy.Field()
+    #citation-text = scrapy.Field()
+    #citation-url = scrapy.Field()
+    #authors = scrapy.Field()
+    #description = scrapy.Field()
+    #journal-year-src = scrapy.Field()

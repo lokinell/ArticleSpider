@@ -26,4 +26,7 @@ print(os.path.dirname(os.path.abspath(__file__)))
 
 # execute(["scrapy", "crawl" , "fang"])
 
-execute(["scrapy", "crawl", "wanfang"])
+# execute(["scrapy", "crawl", "wanfang"])
+
+
+execute(["scrapy", "crawl", "googlescholar"])

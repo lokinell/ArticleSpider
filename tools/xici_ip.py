@@ -8,14 +8,14 @@ import requests
 from scrapy.selector import Selector
 import pymysql
 
-# conn = pymysql.connect(
-#     host="127.0.0.1",
-#     user="palanbi",
-#     passwd="DataRx2017!",
-#     db="articlespider",
-#     charset="utf8",
-#     cursorclass=pymysql.cursors.DictCursor)
-# cursor = conn.cursor()
+conn = pymysql.connect(
+    host="127.0.0.1",
+    user="palan",
+    passwd="palan",
+    db="articlespider",
+    charset="utf8",
+    cursorclass=pymysql.cursors.DictCursor)
+cursor = conn.cursor()
 
 
 def crawl_ips():
@@ -111,6 +111,6 @@ class GetIP(object):
 
 # print (crawl_ips())
 if __name__ == "__main__":
-    # crawl_ips()
+    #crawl_ips()
     get_ip = GetIP()
     get_ip.get_random_ip()

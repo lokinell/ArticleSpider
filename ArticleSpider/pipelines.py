@@ -156,7 +156,26 @@ class WanfangPipeline(object):
         if self.count % 100 == 0:
             print("-------------------" * 10)
             self.paper += 1
-        with open("./data1/d" + str(self.paper) + self.name, "a", encoding='utf8') as f:
+        with open("/Users/opal/PycharmProjects/ArticleSpider/data/d" + str(self.paper) + self.name, "a", encoding='utf8') as f:
+            f.write(a)
+            f.write("\n")
+            f.close()
+        self.count += 1
+        print(self.count, "**" * 20)
+
+class GoogleScholarPipeline(object):
+    def __init__(self):
+        self.count = 0
+        self.paper = 0
+        self.name = 'GoogleScholar.txt'
+
+    def process_item(self, item, spider):
+        a = json.dumps(dict(item), ensure_ascii=False)
+        if self.count % 100 == 0:
+            print("-------------------" * 10)
+            self.paper += 1
+        #with open("/Users/opal/PycharmProjects/ArticleSpider/data/d" + str(self.paper) + self.name, "a", encoding='utf8') as f:
+        with open("/Users/opal/PycharmProjects/ArticleSpider/data/d" + str(self.paper) + self.name, "a", encoding='utf8') as f:
             f.write(a)
             f.write("\n")
             f.close()
