@@ -4,6 +4,18 @@
 #
 # See documentation in:
 # https://doc.scrapy.org/en/latest/topics/spider-middleware.html
+#
+# Change shadowsocks Proxy to Http Proxy on MAC
+#
+# brew install privoxy
+# vim /usr/local/etc/privoxy/config
+# forward-socks5t   /               127.0.0.1:1080 .
+# listen-address  127.0.0.1:8118
+#
+# RUN in bash:    /usr/local/sbin/privoxy /usr/local/etc/privoxy/config
+#                 EXPORT http_proxy=http://127.0.0.1:8118
+#                 EXPORT https_proxy http://127.0.0.1:8118
+
 
 from scrapy import signals
 from fake_useragent import UserAgent

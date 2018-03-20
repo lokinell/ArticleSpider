@@ -175,7 +175,7 @@ class GoogleScholarPipeline(object):
             print("-------------------" * 10)
             self.paper += 1
         #with open("/Users/opal/PycharmProjects/ArticleSpider/data/d" + str(self.paper) + self.name, "a", encoding='utf8') as f:
-        with open("/Users/opal/PycharmProjects/ArticleSpider/data/d" + str(self.paper) + self.name, "a", encoding='utf8') as f:
+        with open("/Users/opal/PycharmProjects/ArticleSpider/data/"   + self.name, "a", encoding='utf8') as f:
             f.write(a)
             f.write("\n")
             f.close()

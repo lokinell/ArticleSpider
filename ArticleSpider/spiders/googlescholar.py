@@ -10,8 +10,8 @@ class GoogleScholarSpider(scrapy.Spider):
     name = 'googlescholar'
     allowed_domains = ["scholar.google.com"]
     start_urls = [
-        #'https://scholar.google.com/scholar?start=0&q=%E5%BF%83%E8%A1%80%E7%AE%A1&hl=zh-CN&as_sdt=0,5&as_ylo=2014'
-        'https://scholar.google.com/scholar?start=0&q=%E5%BF%83%E8%A1%80%E7%AE%A1&hl=zh-CN&as_sdt=0,5&as_ylo=2014&as_vis=1'
+        'https://scholar.google.com/scholar?start=530&q=%E5%BF%83%E8%A1%80%E7%AE%A1&hl=zh-CN&as_sdt=0,5&as_ylo=2014'
+
     ]
 
     cookies = {}
@@ -19,6 +19,9 @@ class GoogleScholarSpider(scrapy.Spider):
     headers = {
         # 'Connection': 'keep - alive',
         'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/52.0.2743.82 Safari/537.36'
+        #'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_7_3) AppleWebKit/535.20 (KHTML, like Gecko) Chrome/19.0.1036.7 Safari/535.20',
+        #'User-Agent': 'user-agent:Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/64.0.3282.140 Safari/537.36',
+
     }
 
     meta = {

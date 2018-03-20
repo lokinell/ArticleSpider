@@ -28,7 +28,7 @@ ROBOTSTXT_OBEY = False
 # Configure a delay for requests for the same website (default: 0)
 # See https://doc.scrapy.org/en/latest/topics/settings.html#download-delay
 # See also autothrottle settings and docs
-DOWNLOAD_DELAY = 3
+DOWNLOAD_DELAY = 120
 # The download delay setting will honor only one of:
 #CONCURRENT_REQUESTS_PER_DOMAIN = 16
 #CONCURRENT_REQUESTS_PER_IP = 16
@@ -60,7 +60,7 @@ DOWNLOADER_MIDDLEWARES = {
     'scrapy.downloadermiddlewares.useragent.UserAgentMiddleware': None,
     # 自定义的使用随机用户代理的中间件
     #'ArticleSpider.middlewares.RandomUserAgentMiddlware': 400,
-    'ArticleSpider.middlewares.ProxyMiddleware': 100,
+    'ArticleSpider.middlewares.ProxyMiddleware': 1,
     # 为伯乐在线测试的Chrome集成。
     # 'ArticleSpider.middlewares.JSPageMiddleware': 1,
 
@@ -78,7 +78,7 @@ DOWNLOADER_MIDDLEWARES = {
 # See https://doc.scrapy.org/en/latest/topics/item-pipeline.html
 ITEM_PIPELINES = {
    #'ArticleSpider.pipelines.ArticlespiderPipeline': 300,
-    'ArticleSpider.pipelines.GoogleScholarPipeline': 300,
+    'ArticleSpider.pipelines.GoogleScholarPipeline': 1,
     #'ArticleSpider.pipelines.GoogleScholarPipeline': 300,
 
     # scrapy自带的三大法宝之一图片下载
@@ -118,9 +118,9 @@ sys.path.insert(0, os.path.join(BASE_DIR, 'ArticleSpider'))
 # See https://doc.scrapy.org/en/latest/topics/autothrottle.html
 AUTOTHROTTLE_ENABLED = True
 # The initial download delay
-AUTOTHROTTLE_START_DELAY = 50
+AUTOTHROTTLE_START_DELAY = 100
 # The maximum download delay to be set in case of high latencies
-AUTOTHROTTLE_MAX_DELAY = 60
+#AUTOTHROTTLE_MAX_DELAY = 120
 # The average number of requests Scrapy should be sending in parallel to
 # each remote server
 #AUTOTHROTTLE_TARGET_CONCURRENCY = 1.0
