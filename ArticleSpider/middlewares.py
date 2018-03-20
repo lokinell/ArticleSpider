@@ -7,7 +7,7 @@
 #
 # Change shadowsocks Proxy to Http Proxy on MAC
 #
-# brew install privoxy
+# brew install proxy
 # vim /usr/local/etc/privoxy/config
 # forward-socks5t   /               127.0.0.1:1080 .
 # listen-address  127.0.0.1:8118
